@@ -44,31 +44,8 @@ with open('input.txt', 'r') as inputFile:
 
 print("\n")    
 
-# visited = [[0 for i in range(len(matrix[0]))] for j in range(len(matrix))]
+# visited = [[0 for i in range(len(matrix[0]))] for j in range(len(matrix))] UNNEEDED
 # pprint(visited)
-
-# #! Created A Function to check if the possible movements are valid or not 
-# def is_row_col_valid(matrix, row, col):
-#     """A function to check if the possible movements are valid for my operation
-
-#     Args:
-#         matrix (list): Main Matrix to be operated on
-#         row (int): row index of the matrix
-#         col (int): column index of the matrix
-
-#     Returns:
-#         int: Returns True if the movement is valid else False
-#     """    
-#     # if row < 0 or col < 0 or row >= len(matrix)-1 or col >= len(matrix[row])-1 or matrix[row][col] == 'N':
-#     #     #?> Basic: If the row, col is out of range or the position is N, then already visited or not valid. 
-#     #     return False
-#     print(len(matrix[0]))
-#     if col < len(matrix[0]) and col >= 0 and row < len(matrix) and row >= 0 and matrix[row][col] == 'Y':
-#         #?> Basic: If the row, col is out of range or the position is N, then already visited or not valid. 
-#         return True
-    
-#     return True
-
 
 def search_neighbour_positions(matrix, row, col):
     """Search all other possible movements for the current position.
@@ -154,12 +131,99 @@ def start_search(matrix):
                 current_result = search_neighbour_positions(matrix, row, col)
                 max_count = 0
                 result = max(current_result, result)
-                
     return result-1
 
 task01_result = start_search(matrix)
 print("Task 01: ", task01_result)
-with open("task01.txt", "w") as f:
+with open("ouput1.txt", "w") as f:
     f.write(str(task01_result))
     f.close()
 ###! TASK 01-END !###
+#! ------------- !#
+
+###! TASK 02: START !###
+###! TASK 02: USING BFS !###
+
+
+matrix = [] #! CLEARING MATRIX so that I can reuse some of my conditions
+with open('input2.txt', 'r') as inputFile:
+    max_row = int(inputFile.readline())
+    max_column = int(inputFile.readline())
+    data = inputFile.readlines() #?> Reading Each Line 
+    for line in data:
+        matrix.append(line.split()) #?> Adding every line to the matrix
+
+
+# print("\n")  
+# pprint(matrix)
+# print("Column:", max_column)
+# print("Row:", max_row)
+visited = [[0 for i in range(int(max_column))] for j in range(int(max_row))]
+
+
+count = 0 
+allHumans = 0
+for row in range(len(matrix)):
+    for col in range(len(matrix[0])):
+        if matrix[row][col] == 'H':
+            allHumans += 1
+
+# print("All Humans:", allHumans)
+def AlienVSHuman(matrix):
+    global allHumans
+    queue = []
+    for i in range(int(max_row)):
+        for j in range(int(max_column)):
+            if matrix[i][j] == 'A':
+                queue.append([i,j])
+    while queue:
+        # print(queue)
+        row, col = queue.pop(0)
+        row = int(row)
+        col = int(col)
+        # print(row,col)
+        # print(type(row), type(col))
+        if col < max_column and col >= 0 and row-1 < max_row and row-1 >= 0 and matrix[row-1][col] == 'H':
+            matrix[row-1][col] = 'N'
+            queue.append([row-1,col])
+            visited[row-1][col] = visited[row][col] + 1
+            allHumans -= 1
+
+        if col+1 < max_column and col+1 >= 0 and row < max_row and row >= 0 and matrix[row][col+1] == 'H':
+            matrix[row][col+1] = 'N'
+            queue.append([row,col+1])
+            # print(type(row), type(col))
+            visited[row][col+1] = visited[row][col] + 1 
+            allHumans -= 1
+        if col-1 < max_column and col-1 >= 0 and row < max_row and row >= 0 and matrix[row][col-1] == 'H':
+            matrix[row][col-1] = 'N'
+            queue.append([row,col-1])
+            visited[row][col-1] = visited[row][col] + 1 
+            allHumans -= 1
+        if row+1 < max_row and row+1 >= 0 and col < max_column and col >= 0 and matrix[row+1][col] == 'H':
+            matrix[row+1][col] = 'N'
+            queue.append([row+1,col])
+            visited[row+1][col] = visited[row][col] + 1 
+            allHumans -= 1  
+    
+    max_value = 0   
+    for i in range(int(max_row)):
+        for j in range(int(max_column)):
+            if visited[i][j] > max_value:
+                max_value = visited[i][j]
+    return allHumans, max_value
+         
+output = ""
+output += f"Time: {AlienVSHuman(matrix)[1]} minutes\n"
+if AlienVSHuman(matrix)[0] == 0:
+    output += "No one survived"
+else: 
+    output += f"{AlienVSHuman(matrix)[0]} survived"
+
+print(output)
+with open("output2.txt", "w") as f:
+    f.write(output)
+    f.close()
+
+###! TASK 02-END !###
+#! ------------- !#
