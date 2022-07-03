@@ -153,14 +153,14 @@ with open('input2.txt', 'r') as inputFile:
     for line in data:
         matrix.append(line.split()) #?> Adding every line to the matrix
 
-
+  
 # print("\n")  
 # pprint(matrix)
 # print("Column:", max_column)
 # print("Row:", max_row)
 visited = [[0 for i in range(int(max_column))] for j in range(int(max_row))]
 
-
+pprint(matrix)
 count = 0 
 allHumans = 0
 for row in range(len(matrix)):
