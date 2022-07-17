@@ -64,9 +64,9 @@ def generate_model(batsman):
         )
     return new_model 
 
-population_count = 1000
+population_count = 100
 population = []
-iteration = 1000
+iteration = 100
 
 for i in range(population_count):
     population.append(
